@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  wfs_fetcher:
+    build:
+      context: ./wfs_fetcher
+      dockerfile: ./Dockerfile
+    environment:
+      - LAYER_NAMES=${LAYER_NAMES} 
+      - PGRST_DB_URI=${PGRST_DB_URI}
+  postgrest:
+    image: postgrest/postgrest
+    environment:
+      - PGRST_DB_URI=${PGRST_DB_URI}
+      - PGRST_DB_ANON_ROLE=${PGRST_DB_ANON_ROLE}
+      - PGRST_SERVER_PORT=${PGRST_SERVER_PORT}
