@@ -1,7 +1,6 @@
 import os
 import requests
 import psycopg2
-import subprocess
 import json
 
 # Load the layer list from the ConfigMap
@@ -14,10 +13,30 @@ limit = 1000
 
 # Fetch the data from each WFS layer and store it in the PostgreSQL server
 try:
+    cursor.execute('create role web_anon nologin')
+    cursor.execute('grant usage on schema public to web_anon')
+    conn.commit()
+except(psycopg2.errors.DuplicateObject, RuntimeError, TypeError, NameError)  as e:
+    print(e) 
+    cursor.execute("ROLLBACK")
+
+try:
     for layer in layers:
+        #table setup
         layerName = layer['name']
         cursor.execute(f'CREATE TABLE IF NOT EXISTS {layerName} (id SERIAL PRIMARY KEY, featureCollection jsonb )')
+        cursor.execute(f'truncate table {layerName};')
         conn.commit()
+
+
+        #postgrest setup
+        try:
+            cursor.execute(f'grant select on public.{layerName} to web_anon;')
+            conn.commit()
+        except (psycopg2.errors.DuplicateObject, RuntimeError, TypeError, NameError)  as e:
+            print(e)
+            cursor.execute("ROLLBACK")
+
         offset = 0
         features = []
         sortKey = layer['sortKey']
@@ -28,7 +47,6 @@ try:
             data = response.json()
             cursor.execute(f"INSERT INTO {layerName} (featureCollection) VALUES (%s)", [json.dumps(data)])
             conn.commit()
-            print('inserted data')
             if len(data['features']) < limit:
                 break
             offset += limit
