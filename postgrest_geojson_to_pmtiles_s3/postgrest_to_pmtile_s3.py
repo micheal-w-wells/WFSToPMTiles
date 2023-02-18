@@ -1,21 +1,26 @@
 import os
 import requests
 import json
+import subprocess
 
 # Load the layer list from the ConfigMap
 layers = json.loads(os.environ.get('LAYER_NAMES'))['layers']
 print(layers)
 try:
     for layer in layers:
-        #table setup
         layerName = layer['name']
-
         pgURL = os.environ.get('PGRST_URL')
-        print(pgURL)
         fullURL = pgURL + '/' + layerName
-        print(fullURL)
         response = requests.get(fullURL)
-        print(response.json())
+
+        with open('tippecanoe_input.json', 'w') as f:
+            f.write(response.text)
+
+        subprocess.run(['tippecanoe', '--output=tiles.mbtiles', '--input=tippecanoe_input.json'], check=True)
+
+        #//subprocess.run(['aws', 's3', 'cp', 'tiles.mbtiles', os.environ.get('S3_URI', '')], check=True)
+
+
 
 except (RuntimeError, TypeError, NameError)  as e:
     print(e)
