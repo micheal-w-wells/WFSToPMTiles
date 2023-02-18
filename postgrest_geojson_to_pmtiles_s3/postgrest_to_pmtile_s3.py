@@ -12,8 +12,9 @@ try:
 
         pgURL = os.environ.get('PGRST_URL')
         print(pgURL)
-        fullURL = pgURL + '/' + layer['name']
-        response = requests.post(os.environ.get('PGRST_URL') + '/' + layer['name'])
+        fullURL = pgURL + '/' + layerName
+        print(fullURL)
+        response = requests.get(fullURL)
         print(response.json())
 
 except (RuntimeError, TypeError, NameError)  as e:

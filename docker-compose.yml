@@ -15,7 +15,7 @@ services:
       - PGRST_DB_ANON_ROLE=${PGRST_DB_ANON_ROLE}
       - PGRST_SERVER_PORT=${PGRST_SERVER_PORT}
     ports: 
-      - "3000"
+      - "3000:3000"
   pmtile_s3: 
     build:
       context: ./postgrest_geojson_to_pmtiles_s3
