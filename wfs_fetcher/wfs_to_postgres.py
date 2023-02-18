@@ -11,7 +11,6 @@ conn = psycopg2.connect(os.environ.get('PGRST_DB_URI', ''))
 cursor = conn.cursor()
 limit = 1000
 
-# Fetch the data from each WFS layer and store it in the PostgreSQL server
 try:
     cursor.execute('create role web_anon nologin')
     cursor.execute('grant usage on schema public to web_anon')
@@ -20,6 +19,7 @@ except(psycopg2.errors.DuplicateObject, RuntimeError, TypeError, NameError)  as 
     print(e) 
     cursor.execute("ROLLBACK")
 
+# Fetch the data from each WFS layer and store it in the PostgreSQL server
 try:
     for layer in layers:
         #table setup
