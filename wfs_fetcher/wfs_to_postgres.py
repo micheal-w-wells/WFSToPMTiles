@@ -42,11 +42,14 @@ try:
         sortKey = layer['sortKey']
         while True:
             wfs_url = layer['url']
-            fullURL = f'{wfs_url}&startIndex={offset}&count={limit}&sortby={sortKey}'
+            fullURL = f'{wfs_url}&startIndex={offset}&count={limit}&sortby={sortKey}&SRSNAME=EPSG:4326'
+            print(fullURL)
             response = requests.get(fullURL)
             data = response.json()
             cursor.execute(f"INSERT INTO {layerName} (featureCollection) VALUES (%s)", [json.dumps(data)])
+            print('inserted')
             conn.commit()
+            break;
             if len(data['features']) < limit:
                 break
             offset += limit

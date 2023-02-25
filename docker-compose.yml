@@ -25,3 +25,4 @@ services:
       - PGRST_URL=${PGRST_URL}
       - PGRST_DB_ANON_ROLE=${PGRST_DB_ANON_ROLE}
       - S3_BUCKET=${S3_BUCKET}
+      - S3_URL=${S3_URL}
