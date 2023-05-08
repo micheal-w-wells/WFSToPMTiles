@@ -11,6 +11,7 @@ RUN	unzip awscliv2.zip && ./aws/install
 COPY postgrest_to_pmtile_s3.py .
 copy ./credentials ./credentials
 copy ./config ./config
+copy ./riso.json ./riso.json
 env AWS_CONFIG_FILE=./config
 env AWS_SHARED_CREDENTIALS_FILE=./credentials
 

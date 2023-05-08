@@ -16,8 +16,11 @@ try:
 
         response = None
         first = None
+        data = None
         try:
             response = requests.get(fullURL)
+            with open('riso.json', 'r') as file:
+                data = file.read()
         except Exception as e:
             print('error fetching layer data')
             print(e)
@@ -25,7 +28,10 @@ try:
 
 
         try: 
-            first = json.loads(response.text)[0]['featurecollection']
+            #first = json.loads(response.text)[0]['featurecollection']
+            ajson = (json.loads(data))
+            #first = json.loads(data)[0]['rows'][0]
+            first = ajson
         except Exception as e: 
             print('error parsing response json from server')
             print(e)
